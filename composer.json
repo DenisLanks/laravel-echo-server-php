@@ -1,0 +1,10 @@
+{
+    "name": "lanks/laravel-echo-server-php",
+    "description": "Laravel Echo Server implementation on top Sockeio PHP(React PHP server).",
+    "keywords": ["event-loop", "asynchronous","socket.io"],
+    "license": "MIT",
+    "require": {
+        "react/event-loop": "^1.0.0"
+    },
+    "minimum-stability": "dev"
+}
