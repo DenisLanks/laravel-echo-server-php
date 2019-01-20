@@ -4,7 +4,8 @@
     "keywords": ["event-loop", "asynchronous","socket.io"],
     "license": "MIT",
     "require": {
-        "react/event-loop": "^1.0.0"
+        "react/event-loop": "^1.0.0",
+        "lanks/socket.io-php": "dev-master"
     },
     "minimum-stability": "dev"
 }
