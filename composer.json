@@ -7,5 +7,14 @@
         "react/event-loop": "^1.0.0",
         "lanks/socket.io-php": "dev-master"
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Lanks\\EchoServer\\": "lanks\\Echo"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+        }
+    }
 }
