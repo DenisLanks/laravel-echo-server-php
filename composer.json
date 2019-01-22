@@ -5,7 +5,10 @@
     "license": "MIT",
     "require": {
         "react/event-loop": "^1.0.0",
-        "lanks/socket.io-php": "dev-master"
+        "lanks/socket.io-php": "dev-master",
+        "illuminate/support": "^5.8@dev",
+        "react/promise": "v2.7.1",
+        "react/http-client": "dev-master"
     },
     "minimum-stability": "dev",
     "autoload": {
