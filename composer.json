@@ -8,7 +8,8 @@
         "lanks/socket.io-php": "dev-master",
         "illuminate/support": "^5.8@dev",
         "react/promise": "v2.7.1",
-        "react/http-client": "dev-master"
+        "react/http-client": "dev-master",
+        "react/http": "dev-master"
     },
     "minimum-stability": "dev",
     "autoload": {

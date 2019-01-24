@@ -3,9 +3,11 @@
 namespace Lanks\EchoServer;
 
 use React\Promise\Promise;
+use React\EventLoop\Factory;
 
 class EchoServer
 {
+    protected $loop;
       /**
      * Default server options.
      *
@@ -89,12 +91,22 @@ class EchoServer
      * @param  {Object} config
      * @return {Promise}
      */
-    public function run($options): Promise {
+    public function run($options=[]): Promise {
+        $this->loop = Factory::create();
         $that = $this;
-        $resolver = function($resolve, $reject) use($that ){
+        $resolver = function($resolve, $reject) use($that, $options ){
+
+            if(empty($options)){
+                $json_config = file_get_contents('laravel-echo-server.json');
+                if($json_config!= false)
+                    $options = json_decode($json_config);
+
+            }
+
             $that->options = array_merge($that->defaultOptions, $options);
             $that->startup();
             $that->server = new Server($that->options);
+
             $serverInitResolver = function($io) use($that,$resolve ){
                 $ioInitResolver = function() use($that,$resolve){
                     Helper::debug('\nServer ready!\n');
@@ -104,6 +116,7 @@ class EchoServer
             };
             $that->server->init()->then($serverInitResolver,function($error){ Helper::error($error); } );
         };
+        $this->loop->run();
         return new Promise($resolver);
     }
 
@@ -229,11 +242,12 @@ class EchoServer
      * @return {void}
      */
     public function onConnect(): void {
-        $this->server->io->on('connection', function($socket){
-            $this->onSubscribe($socket);
-            $this->onUnsubscribe($socket);
-            $this->onDisconnecting($socket);
-            $this->onClientEvent($socket);
+        $that = $this;
+        $this->server->io->on('connection', function($socket)use ($that){
+            $that->onSubscribe($socket);
+            $that->onUnsubscribe($socket);
+            $that->onDisconnecting($socket);
+            $that->onClientEvent($socket);
         });
     }
 

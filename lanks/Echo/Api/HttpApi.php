@@ -2,6 +2,7 @@
 
 namespace Lanks\EchoServer\Api;
 
+use React\Http\Response;
 use Lanks\EchoServer\Channels\Channel;
 
 class HttpApi
@@ -43,9 +44,9 @@ class HttpApi
      * @param {any} req
      * @param {any} res
      */
-    public function getRoot($req, $resp)
+    public function getRoot($req,Response $resp)
     {
-       $resp->send('OK');
+        $resp->getBody()->write('OK');
     }
 
     /**
@@ -54,12 +55,12 @@ class HttpApi
      * @param {any} req
      * @param {any} res
      */
-    public function getStatus($req, $resp)
+    public function getStatus($req, Response $resp)
     {
         $subscriptionCount = $this->io->engine->clientsCount;
         $executionTime = microtime(true) - $_SERVER["REQUEST_TIME_FLOAT"];
         $memoryUsage = memory_get_usage ();
-        $resp->write(json_encode([
+        $resp->getBody()->write(json_encode([
             'subscription_count'=> $subscriptionCount,
             'uptime'=> $executionTime,
             'memory_usage'=> $memoryUsage,
@@ -72,7 +73,7 @@ class HttpApi
      * @param {any} req
      * @param {any} res
      */
-    public function getChannels($req, $resp)
+    public function getChannels($req,Response  $resp)
     {
         $prefix = url.parse(req.url, true).query.filter_by_prefix;
         $rooms = $this->io->sockets->adapter->rooms;
@@ -91,7 +92,9 @@ class HttpApi
                 ];
         }
 
-        $res->write(json_encode([ 'channels'=> $channels ]));
+        //return new Response(200,)
+        $res->getBody()
+        ->write(json_encode([ 'channels'=> $channels ]));
     }
 
      /**
@@ -100,7 +103,7 @@ class HttpApi
      * @param  {any} req
      * @param  {any} res
      */
-    public function getChannel($req, $resp)
+    public function getChannel($req,Response  $resp)
     {
         /**
          * @todo get correct param channel name
@@ -122,10 +125,10 @@ class HttpApi
                  */
                 $result['user_count'] = _.uniqBy(members, 'user_id')->length;
 
-                $resp->write(json_encode($result));
+                $resp->getBody()->write(json_encode($result));
             });
         } else {
-                $resp->write(json_encode($result));
+                $resp->getBody()->write(json_encode($result));
         }
     }
 
@@ -136,7 +139,7 @@ class HttpApi
      * @param  {any} res
      * @return {boolean}
      */
-    public function getChannelUsers($req, $resp)
+    public function getChannelUsers($req, Response $resp)
     {
         /**
          * @todo get correct param channel name
@@ -158,7 +161,7 @@ class HttpApi
             // _.uniqBy(members, 'user_id').forEach((member: any) => {
             //     users.push({ id: member.user_id });
             // });
-            $resp->write(json_encode(['users'=> $users]));
+            $resp->getBody()->write(json_encode(['users'=> $users]));
             
         }, function($error) {
             Log.error(error);
@@ -173,12 +176,12 @@ class HttpApi
      * @param  {string} message
      * @return {boolean}
      */
-    public function badResponse($req, $resp, string $message)
+    public function badResponse($req, Response $resp, string $message)
     {
         /**
          * @todo set status code to 400
          */
-        $resp->write(json_encode(['error'=> $users]));
+        $resp->getBody()->write(json_encode(['error'=> $message]));
         return false;
     }
 
